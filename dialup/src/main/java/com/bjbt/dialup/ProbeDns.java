@@ -79,6 +79,7 @@ class ProbeDns {
     }
 
     private static void uploadDNSResult(String result) {
+//        Test upload Git
         String netFlag = ProbeSystemParam.getNetFlag(ProbeInitializer.getContext());
         probeDnsData.setFactory(ProbeSystemParam.getDeviceBrand());
         probeDnsData.setModel(ProbeSystemParam.getDeviceModel());
