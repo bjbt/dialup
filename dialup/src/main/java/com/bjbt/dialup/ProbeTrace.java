@@ -36,6 +36,7 @@ class ProbeTrace {
         probeTraceData.setEventName(eventName);
         probeTraceData.setEventType(eventType);
         probeTraceData.setApiTime(apiTime);
+        probeTraceData.setPurposeAddress(ip);
         new ExecuteTraceAsyncTask(MAX_TTL, ip).execute();
     }
 
@@ -44,7 +45,7 @@ class ProbeTrace {
         for (ProbeTraceEntity container : traces) {
             traceResult.add(container.getIp());
         }
-        uploadTraceResult(traceResult.toString());
+        uploadTraceResult(traceResult.toString().replaceAll("\\[|\\]", ""));
         ttl = 1;
         return traces;
     }
@@ -211,6 +212,6 @@ class ProbeTrace {
             probeTraceData.setPasswordFlag("1");
         }
 
-        ProbeUploadData.upload(probeTraceData.toJson(), ProbeInitializer.getContext().getString(R.string.t_t),false);
+        ProbeUploadData.upload(probeTraceData.toJson(), ProbeInitializer.getContext().getString(R.string.trace_type), probeTraceData.getBusinessCode());
     }
 }

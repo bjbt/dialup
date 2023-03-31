@@ -30,14 +30,20 @@
 -keep class com.bjbt.dialup.ProbeTraceData.** { *; }
 -keep class com.bjbt.dialup.ProbeTraceEntity.** { *; }
 # 对外接口类不参与混淆
--keep class com.bjbt.dialup.ProbeInitializer{*;}
+-keep class com.bjbt.dialup.ProbeInitializer {
+    public static void initializtion*(...);
+    public static void setDebug*(...);
+}
 -keep class com.bjbt.dialup.ProbeController{*;}
+
+# Optionally, you can also add a mapping to obfuscate the constant name
+-renamesourcefileattribute SourceFile
 
 # 代码混淆压缩比，在0~7之间，默认为5，一般不做修改
 -optimizationpasses 5
 
 #将包里的类混淆成n个再重新打包到一个统一的package中
--repackageclasses 'example'
+-repackageclasses 'ProbeConfusion'
 -allowaccessmodification
 
 # 混合时不使用大小写混合，混合后的类名为小写
@@ -46,7 +52,6 @@
 # 指定不去忽略非公共库的类
 -dontskipnonpubliclibraryclasses
 
-# 这句话能够使我们的项目混淆后产生映射文件
 # 包含有类名->混淆后类名的映射关系
 -verbose
 
@@ -65,27 +70,18 @@
 # 抛出异常时保留代码行号
 -keepattributes SourceFile,LineNumberTable
 
-# 指定混淆是采用的算法，后面的参数是一个过滤器
 # 这个过滤器是谷歌推荐的算法，一般不做更改
 -optimizations !code/simplification/cast,!field/*,!class/merging/*
 
-#############################################
-#
-# Android开发中一些需要保留的公共部分
-#
-#############################################
-
 # 保留我们使用的四大组件，自定义的Application等等这些类不被混淆
-# 因为这些子类都有可能被外部调用
 -keep public class * extends android.app.Activity
--keep public class * extends android.app.Appliction
+-keep public class * extends android.app.Application
 -keep public class * extends android.app.Service
 -keep public class * extends android.content.BroadcastReceiver
 -keep public class * extends android.content.ContentProvider
 -keep public class * extends android.app.backup.BackupAgentHelper
 -keep public class * extends android.preference.Preference
 -keep public class * extends android.view.View
--keep public class com.android.vending.licensing.ILicensingService
 
 # 保留support下的所有类及其内部类
 -keep class android.support.** {*;}

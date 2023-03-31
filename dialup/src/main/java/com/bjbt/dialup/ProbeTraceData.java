@@ -21,6 +21,7 @@ class ProbeTraceData {
     private String eventType;
     private String result;
     private String apiTime;
+    private String purposeAddress;
 
     public String getFactory() {
         return factory;
@@ -150,6 +151,14 @@ class ProbeTraceData {
         this.apiTime = apiTime;
     }
 
+    public String getPurposeAddress() {
+        return purposeAddress;
+    }
+
+    public void setPurposeAddress(String purposeAddress) {
+        this.purposeAddress = purposeAddress;
+    }
+
     public String toJson() {
         JSONObject jsonObject = new JSONObject();
         try {
@@ -157,7 +166,7 @@ class ProbeTraceData {
             jsonObject.put("model", getModel());
             jsonObject.put("operatingSystem", getOperatingSystem());
             jsonObject.put("operatingSystemVersion", getOperatingSystemVersion());
-            jsonObject.put("token", ProbeInitializer.getContext().getString(R.string.t_k));
+            jsonObject.put("token", ProbeInitializer.getContext().getString(R.string.token));
             jsonObject.put("businessCode", getBusinessCode());
             jsonObject.put("passwordFlag", getPasswordFlag());
             jsonObject.put("clientId", getClientId());
@@ -171,7 +180,8 @@ class ProbeTraceData {
             jsonObject.put("eventName", getEventName());
             jsonObject.put("apiTime", getApiTime());
             jsonObject.put("sdkType", "2");
-            jsonObject.put("sdkVersion", ProbeConstant.VERSION);
+            jsonObject.put("sdkVersion", ProbeInitializer.getContext().getString(R.string.version_code));
+            jsonObject.put("purposeAddress", getPurposeAddress());
             return jsonObject.toString();
         } catch (JSONException e) {
             e.printStackTrace();

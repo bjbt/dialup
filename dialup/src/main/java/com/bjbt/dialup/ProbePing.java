@@ -21,6 +21,7 @@ class ProbePing {
         probePingData.setEventName(eventName);
         probePingData.setEventType(eventType);
         probePingData.setApiTime(apiTime);
+        probePingData.setPurposeAddress(ip);
 
         probeCheckPingClient(ip);
     }
@@ -57,7 +58,7 @@ class ProbePing {
                     pingData.add(resultLine);
                 }
             }
-            pingResult = pingData.toString();
+            pingResult = pingData.toString().replaceAll("\\[|\\]", "");
             uploadPingResult(pingResult);
         } catch (IOException e) {
             e.printStackTrace();
@@ -95,6 +96,6 @@ class ProbePing {
             probePingData.setPasswordFlag("1");
         }
 
-        ProbeUploadData.upload(probePingData.toJson(),ProbeInitializer.getContext().getString(R.string.p_t),false);
+        ProbeUploadData.upload(probePingData.toJson(),ProbeInitializer.getContext().getString(R.string.ping_type),probePingData.getBusinessCode());
     }
 }

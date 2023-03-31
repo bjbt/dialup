@@ -25,6 +25,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
@@ -39,20 +40,20 @@ class ProbeNetManager {
         init();
     }
 
-    protected void get(String url,Callback callback) {
+    protected void get(String url, Callback callback) {
         serverUrl = url;
         handleData(null, callback);
     }
 
-    protected void get(String url,String params, Callback callback) {
+    protected void get(String url, String params, Callback callback) {
         serverUrl = url;
         handleData(params, callback);
     }
 
-    protected void post(String url,String params, Callback callback) {
+    protected void post(String url, String params, Callback callback) {
         requestMethod = ProbeConstant.POST;
         serverUrl = url;
-        handleData(params,callback);
+        handleData(params, callback);
     }
 
     protected void init() {
@@ -61,7 +62,7 @@ class ProbeNetManager {
         connectTimeout = 3000;
     }
 
-    private void handleData(final String params,final Callback callback) {
+    private void handleData(final String params, final Callback callback) {
         @SuppressLint("HandlerLeak") final Handler handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(@NonNull Message msg) {
@@ -74,10 +75,10 @@ class ProbeNetManager {
             @Override
             public void run() {
                 try {
-                    if (new URL(serverUrl).getProtocol().toLowerCase().equals("https")){
-                        submitHttpsData(params,callback, handler);
-                    }else {
-                        submitHttpData(params,callback,handler);
+                    if (new URL(serverUrl).getProtocol().equalsIgnoreCase("https")) {
+                        submitHttpsData(params, callback, handler);
+                    } else {
+                        submitHttpData(params, callback, handler);
                     }
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
@@ -90,6 +91,13 @@ class ProbeNetManager {
     private void submitHttpsData(String params, Callback callback, Handler handler) {
         try {
             URL url = new URL(serverUrl);
+            if (Build.VERSION.SDK_INT <= 20) {
+                SSLContext sslcontext = SSLContext.getInstance("TLSv1.2");
+                sslcontext.init(null, null, null);
+                SSLSocketFactory NoSSLv3Factory = new NoSSLv3SocketFactory(sslcontext.getSocketFactory());
+                HttpsURLConnection.setDefaultSSLSocketFactory(NoSSLv3Factory);
+            }
+
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             SSLContext sslContext = SSLContext.getInstance("SSL");
             sslContext.init(null, new TrustManager[]{new X509TrustManager() {
@@ -114,7 +122,6 @@ class ProbeNetManager {
                     return true;
                 }
             });
-
             connection.setRequestMethod(requestMethod);
             connection.setConnectTimeout(connectTimeout);
             connection.setReadTimeout(connectTimeout);
@@ -122,7 +129,7 @@ class ProbeNetManager {
                 connection.setDoInput(true);
                 connection.setDoOutput(true);
                 connection.setUseCaches(useCaches);
-                connection.setRequestProperty(ProbeConstant.TOKEN, ProbeInitializer.getContext().getString(R.string.t_k));
+                connection.setRequestProperty(ProbeConstant.TOKEN, ProbeInitializer.getContext().getString(R.string.token));
                 connection.setRequestProperty(ProbeConstant.CONTENT_TYPE, ProbeConstant.CONTENT_TYPE_VALUE);
                 OutputStream outputStream = connection.getOutputStream();
                 outputStream.write(params.getBytes(StandardCharsets.UTF_8));
@@ -137,7 +144,7 @@ class ProbeNetManager {
                 callback.onFailed("Error: response is" + response);
             }
         } catch (Exception e) {
-            callback.onFailed("Error: "+e);
+            callback.onFailed("Error: " + e);
             e.printStackTrace();
         }
     }
@@ -154,7 +161,7 @@ class ProbeNetManager {
                 connection.setDoInput(true);
                 connection.setDoOutput(true);
                 connection.setUseCaches(useCaches);
-                connection.setRequestProperty(ProbeConstant.TOKEN, ProbeInitializer.getContext().getString(R.string.t_k));
+                connection.setRequestProperty(ProbeConstant.TOKEN, ProbeInitializer.getContext().getString(R.string.token));
                 connection.setRequestProperty(ProbeConstant.CONTENT_TYPE, ProbeConstant.CONTENT_TYPE_VALUE);
                 OutputStream outputStream = connection.getOutputStream();
                 outputStream.write(params.getBytes(StandardCharsets.UTF_8));
@@ -169,7 +176,7 @@ class ProbeNetManager {
                 callback.onFailed("Error: response is" + response);
             }
         } catch (Exception e) {
-            callback.onFailed("Error: "+e);
+            callback.onFailed("Error: " + e);
             e.printStackTrace();
         }
     }
@@ -186,7 +193,7 @@ class ProbeNetManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        resultData = new String(byteArrayOutputStream.toByteArray());
+        resultData = byteArrayOutputStream.toString();
         return resultData;
     }
 

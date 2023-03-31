@@ -1,15 +1,15 @@
 package com.bjbt.dialup;
 
-import android.text.TextUtils;
+
+import java.io.File;
 
 class ProbeShort {
-
 
     private static ProbeShortData probeShortData;
 
     protected static void shortProcessReport(String businessCode, String clientId, String eventCode, String eventName, String eventType, String eventValue, String eventStatus,
                                              String exceptionCode, String exceptionMsg, String apiTime) {
-        if (probeShortData == null){
+        if (probeShortData == null) {
             probeShortData = new ProbeShortData();
         }
 
@@ -30,13 +30,15 @@ class ProbeShort {
     protected static void probeUploadProcessReport() {
         String netFlag = ProbeSystemParam.getNetFlag(ProbeInitializer.getContext());
         if (probeShortData.getEventType().equals("1")) {
-            probeShortData.setEventSeq(String.valueOf(System.currentTimeMillis()));
-            ProbeUtils.cacheDate(String.valueOf(System.currentTimeMillis()), ProbeInitializer.getContext().getString(R.string.s_s_t));
+            long currentTime = System.currentTimeMillis();
+            probeShortData.setEventSeq(String.valueOf(currentTime));
+            ProbeUtils.cacheDate(String.valueOf(currentTime), probeShortData.getBusinessCode() + "shortProcessReport" + probeShortData.getEventCode());
         } else {
-            if (TextUtils.isEmpty(ProbeUtils.loadCacheData(ProbeInitializer.getContext().getString(R.string.s_s_t)))) {
-                probeShortData.setEventSeq(String.valueOf(System.currentTimeMillis()));
+            File shortSeq = new File(ProbeInitializer.getContext().getFilesDir(), probeShortData.getBusinessCode() + "shortProcessReport" + probeShortData.getEventCode());
+            if (shortSeq.exists()) {
+                probeShortData.setEventSeq(ProbeUtils.loadCacheData(probeShortData.getBusinessCode() + "shortProcessReport" + probeShortData.getEventCode()));
             } else {
-                probeShortData.setEventSeq(ProbeUtils.loadCacheData(ProbeInitializer.getContext().getString(R.string.s_s_t)));
+                probeShortData.setEventSeq(String.valueOf(System.currentTimeMillis()));
             }
         }
 
@@ -50,13 +52,12 @@ class ProbeShort {
         probeShortData.setNetFlag(netFlag);
         probeShortData.setCarrierName(ProbeSystemParam.getOperators(ProbeInitializer.getContext()));
 
-        if (probeShortData.getClientId().length() > 16){
+        if (probeShortData.getClientId().length() > 16) {
             probeShortData.setPasswordFlag("2");
-        }else {
+        } else {
             probeShortData.setPasswordFlag("1");
         }
 
-        ProbeUploadData.upload(probeShortData.toJson(),ProbeInitializer.getContext().getString(R.string.s_t),false);
-
+        ProbeUploadData.upload(probeShortData.toJson(), ProbeInitializer.getContext().getString(R.string.short_type), probeShortData.getBusinessCode());
     }
 }

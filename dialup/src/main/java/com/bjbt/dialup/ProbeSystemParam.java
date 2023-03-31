@@ -8,6 +8,8 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 
+import java.io.File;
+
 
 class ProbeSystemParam {
 
@@ -51,8 +53,7 @@ class ProbeSystemParam {
     }
 
     private static PackageInfo getPackageInfo(Context context) {
-        PackageInfo pi = null;
-
+        PackageInfo pi;
         try {
             PackageManager pm = context.getPackageManager();
             pi = pm.getPackageInfo(context.getPackageName(),
@@ -62,8 +63,7 @@ class ProbeSystemParam {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return pi;
+        return null;
     }
 
     protected static String getOperators(Context context) {
@@ -72,7 +72,7 @@ class ProbeSystemParam {
         String operator = null;
         String IMSI = tm.getSimOperator();
         if (IMSI == null || IMSI.equals("")) {
-            return operator;
+            return null;
         }
         if (IMSI.startsWith("46000") || IMSI.startsWith("46002")) {
             operator = "中国移动";
@@ -123,7 +123,9 @@ class ProbeSystemParam {
     }
 
     protected static void systemParameter(Context context) {
-        ProbeUtils.cacheDate("手机厂商：" + getDeviceBrand() + ",手机型号：" + getDeviceModel() + ",操作系统版本：" + getSystemVersion() + ",操作系统：" + getOperatingSystem() + ",版本号：" + getVersionCode(context) + ",运营商：" + getOperators(context), ProbeConstant.BUSINESS_CODE_SYSTEM);
+        File systemFile = new File(ProbeInitializer.getContext().getFilesDir(), ProbeConstant.BUSINESS_CODE_SYSTEM);
+        if (!systemFile.exists()) {
+            ProbeUtils.cacheDate(getDeviceBrand() + "," + getDeviceModel() + "," + getSystemVersion() + "," + getOperatingSystem() + "," + getVersionCode(context) + "," + getOperators(context), ProbeConstant.BUSINESS_CODE_SYSTEM);
+        }
     }
-
 }

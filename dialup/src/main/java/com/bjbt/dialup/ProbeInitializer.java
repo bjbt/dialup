@@ -3,7 +3,6 @@ package com.bjbt.dialup;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,70 +12,71 @@ public class ProbeInitializer {
 
     @SuppressLint("StaticFieldLeak")
     private static Context context;
-    private static String probeUploadUrl;
     private static String businessCode;
-    private static ProbeNetManager probeNetManager = new ProbeNetManager();
+    private static String serverType;
+    private static final ProbeNetManager probeNetManager = new ProbeNetManager();
 
-    public static Context getContext() {
+    protected static Context getContext() {
         return context;
     }
 
-    static String getProbeUploadUrl() {
-        return probeUploadUrl;
-    }
-
-    static String getBusinessCode() {
+    protected static String getBusinessCode() {
         return businessCode;
     }
 
+    protected static String getServerType() {
+        return serverType;
+    }
 
-    public static void initializtion(Context context, String businessCode) {
+    public static void initializtion(Context context, String businessCode, String serverType) {
+        System.setProperty(context.getString(R.string.ipv_6_k), context.getString(R.string.ipv_6_y));
         ProbeInitializer.context = context;
         ProbeInitializer.businessCode = businessCode;
+        ProbeInitializer.serverType = serverType;
         ProbeSystemParam.systemParameter(context);
-        String sv = ProbeUtils.loadCacheData(ProbeConstant.SDK_VERSION);
-        if (!sv.equals(ProbeConstant.VERSION) && !TextUtils.isEmpty(sv)) {
-            probeRequestUploadUrl(businessCode);
-        }
 
         String isUpload = ProbeUtils.loadCacheData(businessCode);
-        if (!isUpload.equals(ProbeConstant.ZERO)) {
-            probeRequestUploadUrl(businessCode);
+        if (!ProbeConstant.ZERO.equals(isUpload)) {
+            probeRequestUploadUrl();
+        }
+
+        String sv = ProbeUtils.loadCacheData(ProbeInitializer.getContext().getString(R.string.sdk_version));
+        if (!ProbeInitializer.getContext().getString(R.string.version_code).equals(sv) && !TextUtils.isEmpty(sv)) {
+            probeRequestUploadUrl();
         }
     }
 
-    private static void probeRequestUploadUrl(final String businessCode) {
-        final String serverUrl;
-        if ((int) (Math.random() * 100 % 2) == 0) {
-            serverUrl = context.getString(R.string.u_s) + "&" + context.getString(R.string.u_e) + "&" + context.getString(R.string.u_c) + businessCode;
+    private static void probeRequestUploadUrl() {
+        String serverUrl;
+        if (businessCode.equals(context.getString(R.string.hdj_code))) {
+            serverUrl = context.getString(R.string.get_server_hdj);
+        } else if (serverType.equalsIgnoreCase("prod")) {
+            serverUrl = context.getString(R.string.get_server_formal);
+        } else if (serverType.equalsIgnoreCase("test")) {
+            serverUrl = context.getString(R.string.get_server_test);
+        } else if (serverType.equalsIgnoreCase("dev")) {
+            serverUrl = context.getString(R.string.get_server_develop);
         } else {
-            serverUrl = context.getString(R.string.u_s) + "&" + context.getString(R.string.u_e) + "&" + context.getString(R.string.u_c) + businessCode;
+            return;
         }
 
-        probeNetManager.get(serverUrl, new ProbeNetManager.Callback() {
+        probeNetManager.get(serverUrl + businessCode, new ProbeNetManager.Callback() {
             @Override
             public void onSuccess(String res) {
                 try {
                     JSONObject object = new JSONObject(res);
                     if (object.getString(ProbeConstant.CODE).equals(ProbeConstant.ZERO)) {
-                        probeUploadUrl = object.getString(ProbeConstant.DATA);
-                        ProbeUtils.cacheDate(ProbeConstant.VERSION, ProbeConstant.SDK_VERSION);
+                        ProbeUtils.cacheDate(context.getString(R.string.version_code), context.getString(R.string.sdk_version));
                         ProbeUtils.cacheDate(object.getString(ProbeConstant.UPLOAD), businessCode);
-                        if (!TextUtils.isEmpty(ProbeUtils.loadCacheData(ProbeConstant.CACHE_DATA)) && ProbeUtils.loadCacheData(ProbeInitializer.getBusinessCode()).equals(ProbeConstant.ONE)) {
-                            ProbeUploadData.upload(ProbeUtils.loadCacheData(ProbeConstant.CACHE_DATA), ProbeUtils.loadCacheData(ProbeConstant.CACHE_CODE), true);
-                        }
-                    } else {
-                        probeUploadUrl = "";
                     }
                 } catch (JSONException e) {
-                    probeUploadUrl = "";
                     e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailed(String err) {
-                probeUploadUrl = "";
+                System.out.print(err);
             }
         });
     }

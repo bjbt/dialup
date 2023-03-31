@@ -41,6 +41,6 @@ class ProbeException {
             probeExceptionData.setPasswordFlag("1");
         }
 
-        ProbeUploadData.upload(probeExceptionData.toJson(),"-1",false);
+        ProbeUploadData.upload(probeExceptionData.toJson(),"-1",probeExceptionData.getBusinessCode());
     }
 }

@@ -1,6 +1,7 @@
 package com.bjbt.dialup;
 
-import android.text.TextUtils;
+
+import java.io.File;
 
 class ProbeLong {
 
@@ -30,13 +31,15 @@ class ProbeLong {
     private static void probeUploadLongProcessReport() {
         String netFlag = ProbeSystemParam.getNetFlag(ProbeInitializer.getContext());
         if (probeLongData.getEventType().equals("1")) {
-            probeLongData.setEventSeq(String.valueOf(System.currentTimeMillis()));
-            ProbeUtils.cacheDate(String.valueOf(System.currentTimeMillis()), ProbeInitializer.getContext().getString(R.string.l_s_t));
+            long currentTime = System.currentTimeMillis();
+            probeLongData.setEventSeq(String.valueOf(currentTime));
+            ProbeUtils.cacheDate(String.valueOf(currentTime), probeLongData.getBusinessCode()+"longProcessReport"+probeLongData.getEventCode());
         } else {
-            if (TextUtils.isEmpty(ProbeUtils.loadCacheData(ProbeInitializer.getContext().getString(R.string.l_s_t)))) {
+            File longSeq = new File(ProbeInitializer.getContext().getFilesDir(),probeLongData.getBusinessCode()+"longProcessReport"+probeLongData.getEventCode());
+            if (longSeq.exists()){
+                probeLongData.setEventSeq(ProbeUtils.loadCacheData(probeLongData.getBusinessCode()+"longProcessReport"+probeLongData.getEventCode()));
+            }else {
                 probeLongData.setEventSeq(String.valueOf(System.currentTimeMillis()));
-            } else {
-                probeLongData.setEventSeq(ProbeUtils.loadCacheData(ProbeInitializer.getContext().getString(R.string.l_s_t)));
             }
         }
 
@@ -56,6 +59,6 @@ class ProbeLong {
             probeLongData.setPasswordFlag("1");
         }
 
-        ProbeUploadData.upload(probeLongData.toJson(),ProbeInitializer.getContext().getString(R.string.l_t),false);
+        ProbeUploadData.upload(probeLongData.toJson(),ProbeInitializer.getContext().getString(R.string.long_type),probeLongData.getBusinessCode());
     }
 }

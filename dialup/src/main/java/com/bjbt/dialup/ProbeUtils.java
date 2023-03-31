@@ -27,6 +27,7 @@ class ProbeUtils {
             e.printStackTrace();
         } finally {
             try {
+                assert writer != null;
                 writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -79,15 +80,15 @@ class ProbeUtils {
     }
 
     protected static String uploadTypeUrl(String urlType) {
-        if (urlType.equals(ProbeInitializer.getContext().getString(R.string.p_t))) {
+        if (urlType.equals(ProbeInitializer.getContext().getString(R.string.ping_type))) {
             return ProbeConstant.PING_SERVER;
-        } else if (urlType.equals(ProbeInitializer.getContext().getString(R.string.d_t))) {
+        } else if (urlType.equals(ProbeInitializer.getContext().getString(R.string.dns_type))) {
             return ProbeConstant.DNS_SERVER;
-        } else if (urlType.equals(ProbeInitializer.getContext().getString(R.string.t_t))) {
+        } else if (urlType.equals(ProbeInitializer.getContext().getString(R.string.trace_type))) {
             return ProbeConstant.TRACE_SERVER;
-        } else if (urlType.equals(ProbeInitializer.getContext().getString(R.string.s_t))) {
+        } else if (urlType.equals(ProbeInitializer.getContext().getString(R.string.short_type))) {
             return ProbeConstant.SHORT_PROCESS_REPORT_SERVER;
-        } else if (urlType.equals(ProbeInitializer.getContext().getString(R.string.l_t))) {
+        } else if (urlType.equals(ProbeInitializer.getContext().getString(R.string.long_type))) {
             return ProbeConstant.LONG_PROCESS_REPORT_SERVER;
         } else {
             return ProbeConstant.EXCEPTION_SERVER;

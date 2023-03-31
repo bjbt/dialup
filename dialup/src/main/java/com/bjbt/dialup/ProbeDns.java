@@ -1,6 +1,8 @@
 package com.bjbt.dialup;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
 
 class ProbeDns {
 
@@ -16,6 +18,7 @@ class ProbeDns {
         probeDnsData.setEventName(eventName);
         probeDnsData.setEventType(eventType);
         probeDnsData.setApiTime(apiTime);
+        probeDnsData.setPurposeAddress(ip);
 
         probeCheckConnectOfDNS(ip);
     }
@@ -30,18 +33,20 @@ class ProbeDns {
         }
     }
 
-    protected static ProbeDNSEntity probeCheckConnectOfDNS(final String hostname) {
-        String result;
+    protected static void probeCheckConnectOfDNS(final String hostname) {
+        List<String> result = new ArrayList<>();
         try {
             dnsNetInfoEntity.setIps(null);
             DNSParse parse = new DNSParse(hostname);
             Thread thread = new Thread(parse);
             thread.start();
             thread.join(3 * 1000);
-            InetAddress resCode = parse.get();
+            InetAddress[] resCode = parse.get();
             if (resCode != null) {
-                result = resCode.getHostAddress();
-                dnsNetInfoEntity.setIps(resCode.getHostAddress());
+                for (InetAddress address : resCode) {
+                    result.add(address.getHostAddress());
+                    dnsNetInfoEntity.setIps(address.getHostAddress());
+                }
             } else {
                 result = null;
             }
@@ -49,13 +54,13 @@ class ProbeDns {
             result = null;
             e.printStackTrace();
         }
-        uploadDNSResult(result);
-        return dnsNetInfoEntity;
+        assert result != null;
+        uploadDNSResult(result.toString().replaceAll("[\\[\\]]", ""));
     }
 
     private static class DNSParse implements Runnable {
-        private String hostname;
-        private InetAddress address;
+        private final String hostname;
+        private InetAddress[] address;
 
         public DNSParse(String hostname) {
             this.hostname = hostname;
@@ -63,17 +68,17 @@ class ProbeDns {
 
         public void run() {
             try {
-                set(InetAddress.getByName(hostname));
+                set(InetAddress.getAllByName(hostname));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        public synchronized void set(InetAddress address) {
+        public synchronized void set(InetAddress[] address) {
             this.address = address;
         }
 
-        public synchronized InetAddress get() {
+        public synchronized InetAddress[] get() {
             return address;
         }
     }
@@ -97,6 +102,6 @@ class ProbeDns {
             probeDnsData.setPasswordFlag("1");
         }
 
-        ProbeUploadData.upload(probeDnsData.toJson(),ProbeInitializer.getContext().getString(R.string.d_t),false);
+        ProbeUploadData.upload(probeDnsData.toJson(),ProbeInitializer.getContext().getString(R.string.dns_type),probeDnsData.getBusinessCode());
     }
 }

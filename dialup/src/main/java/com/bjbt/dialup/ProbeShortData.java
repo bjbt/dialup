@@ -193,7 +193,7 @@ class ProbeShortData {
             jsonObject.put("model", getModel());
             jsonObject.put("operatingSystem", getOperatingSystem());
             jsonObject.put("operatingSystemVersion", getOperatingSystemVersion());
-            jsonObject.put("token", ProbeInitializer.getContext().getString(R.string.t_k));
+            jsonObject.put("token", ProbeInitializer.getContext().getString(R.string.token));
             jsonObject.put("businessCode", getBusinessCode());
             jsonObject.put("passwordFlag", getPasswordFlag());
             jsonObject.put("clientId", getClientId());
@@ -211,7 +211,7 @@ class ProbeShortData {
             jsonObject.put("exceptionMsg", getExceptionMsg());
             jsonObject.put("apiTime", getApiTime());
             jsonObject.put("sdkType", "2");
-            jsonObject.put("sdkVersion", ProbeConstant.VERSION);
+            jsonObject.put("sdkVersion", ProbeInitializer.getContext().getString(R.string.version_code));
             return jsonObject.toString();
         } catch (JSONException e) {
             e.printStackTrace();
