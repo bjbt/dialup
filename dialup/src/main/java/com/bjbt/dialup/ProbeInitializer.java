@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+
 
 public class ProbeInitializer {
 
@@ -35,13 +37,21 @@ public class ProbeInitializer {
         ProbeInitializer.serverType = serverType;
         ProbeSystemParam.systemParameter(context);
 
-        String isUpload = ProbeUtils.loadCacheData(businessCode);
-        if (!ProbeConstant.ZERO.equals(isUpload)) {
-            probeRequestUploadUrl();
+        File isUploadFile = new File(ProbeInitializer.getContext().getFilesDir(), businessCode);
+        if (isUploadFile.exists()){
+            String isUpload = ProbeUtils.loadCacheData(businessCode);
+            if (!ProbeConstant.ZERO.equals(isUpload)) {
+                probeRequestUploadUrl();
+            }
         }
 
-        String sv = ProbeUtils.loadCacheData(ProbeInitializer.getContext().getString(R.string.sdk_version));
-        if (!ProbeInitializer.getContext().getString(R.string.version_code).equals(sv) && !TextUtils.isEmpty(sv)) {
+        File svFile = new File(ProbeInitializer.getContext().getFilesDir(), ProbeInitializer.getContext().getString(R.string.sdk_version));
+        if (svFile.exists()){
+            String sv = ProbeUtils.loadCacheData(ProbeInitializer.getContext().getString(R.string.sdk_version));
+            if (!ProbeInitializer.getContext().getString(R.string.version_code).equals(sv)) {
+                probeRequestUploadUrl();
+            }
+        }else {
             probeRequestUploadUrl();
         }
     }
