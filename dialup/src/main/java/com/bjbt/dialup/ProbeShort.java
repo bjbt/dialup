@@ -6,6 +6,7 @@ import java.io.File;
 class ProbeShort {
 
     private static ProbeShortData probeShortData;
+    private static final ProbeSystemData systemData = new ProbeSystemData();
 
     protected static void shortProcessReport(String businessCode, String clientId, String eventCode, String eventName, String eventType, String eventValue, String eventStatus,
                                              String exceptionCode, String exceptionMsg, String apiTime) {
@@ -28,7 +29,6 @@ class ProbeShort {
     }
 
     protected static void probeUploadProcessReport() {
-        String netFlag = ProbeSystemParam.getNetFlag(ProbeInitializer.getContext());
         if (probeShortData.getEventType().equals("1")) {
             long currentTime = System.currentTimeMillis();
             probeShortData.setEventSeq(String.valueOf(currentTime));
@@ -42,15 +42,15 @@ class ProbeShort {
             }
         }
 
-        probeShortData.setFactory(ProbeSystemParam.getDeviceBrand());
-        probeShortData.setModel(ProbeSystemParam.getDeviceModel());
-        probeShortData.setOperatingSystem(ProbeSystemParam.getOperatingSystem());
-        probeShortData.setOperatingSystemVersion(ProbeSystemParam.getSystemVersion());
+        probeShortData.setFactory(systemData.getDeviceBrand());
+        probeShortData.setModel(systemData.getDeviceModel());
+        probeShortData.setOperatingSystem(systemData.getOperatingSystem());
+        probeShortData.setOperatingSystemVersion(systemData.getSystemVersion());
         probeShortData.setClientId(ProbeUtils.md5(probeShortData.getClientId()));
-        probeShortData.setAppName(ProbeSystemParam.getAppName(ProbeInitializer.getContext()));
-        probeShortData.setAppVersion(ProbeSystemParam.getVersionName(ProbeInitializer.getContext()));
-        probeShortData.setNetFlag(netFlag);
-        probeShortData.setCarrierName(ProbeSystemParam.getOperators(ProbeInitializer.getContext()));
+        probeShortData.setAppName(systemData.getAppName());
+        probeShortData.setAppVersion(systemData.getVersionName());
+        probeShortData.setNetFlag(systemData.getNetFlag());
+        probeShortData.setCarrierName(systemData.getOperators());
 
         if (probeShortData.getClientId().length() > 16) {
             probeShortData.setPasswordFlag("2");

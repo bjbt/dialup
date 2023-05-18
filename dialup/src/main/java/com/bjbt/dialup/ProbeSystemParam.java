@@ -9,6 +9,7 @@ import android.os.Build;
 import android.telephony.TelephonyManager;
 
 import java.io.File;
+import java.util.Objects;
 
 
 class ProbeSystemParam {
@@ -49,7 +50,7 @@ class ProbeSystemParam {
     }
 
     protected static String getVersionCode(Context context) {
-        return getPackageInfo(context).versionName;
+        return Objects.requireNonNull(getPackageInfo(context)).versionName;
     }
 
     private static PackageInfo getPackageInfo(Context context) {
@@ -67,25 +68,23 @@ class ProbeSystemParam {
     }
 
     protected static String getOperators(Context context) {
-        TelephonyManager tm = (TelephonyManager) context
-                .getSystemService(Context.TELEPHONY_SERVICE);
-        String operator = null;
-        String IMSI = tm.getSimOperator();
-        if (IMSI == null || IMSI.equals("")) {
-            return null;
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        if (telephonyManager != null) {
+            String networkOperator = telephonyManager.getNetworkOperator();
+            if (networkOperator != null && !networkOperator.isEmpty()) {
+                if (networkOperator.equals("46000") || networkOperator.equals("46002") || networkOperator.equals("46007")) {
+                    return "中国移动";
+                } else if (networkOperator.equals("46001")) {
+                    return "中国联通";
+                } else if (networkOperator.equals("46003")) {
+                    return "中国电信";
+                }
+            }
         }
-        if (IMSI.startsWith("46000") || IMSI.startsWith("46002")) {
-            operator = "中国移动";
-        } else if (IMSI.startsWith("46001")) {
-            operator = "中国联通";
-        } else if (IMSI.startsWith("46003")) {
-            operator = "中国电信";
-        }
-        return operator;
+        return "未知运营商";
     }
 
     public static String getNetFlag(Context context) {
-
         NetworkInfo info = ((ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
         if (info != null && info.isConnected()) {
@@ -123,6 +122,17 @@ class ProbeSystemParam {
     }
 
     protected static void systemParameter(Context context) {
+        ProbeSystemData systemData = new ProbeSystemData();
+        systemData.setSystemVersion(getSystemVersion());
+        systemData.setDeviceModel(getDeviceModel());
+        systemData.setDeviceBrand(getDeviceBrand());
+        systemData.setOperatingSystem(getOperatingSystem());
+        systemData.setVersionCode(getVersionCode(context));
+        systemData.setOperators(getOperators(context));
+        systemData.setNetFlag(getNetFlag(context));
+        systemData.setAppName(getAppName(context));
+        systemData.setVersionName(getVersionName(context));
+
         File systemFile = new File(ProbeInitializer.getContext().getFilesDir(), ProbeConstant.BUSINESS_CODE_SYSTEM);
         if (!systemFile.exists()) {
             ProbeUtils.cacheDate(getDeviceBrand() + "," + getDeviceModel() + "," + getSystemVersion() + "," + getOperatingSystem() + "," + getVersionCode(context) + "," + getOperators(context), ProbeConstant.BUSINESS_CODE_SYSTEM);

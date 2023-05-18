@@ -11,6 +11,7 @@ class ProbePing {
 
     private static List<String> pingData;
     private static ProbePingData probePingData;
+    private static final ProbeSystemData systemData = new ProbeSystemData();
 
     protected static void ping(String businessCode, String clientId, String ip, String eventCode, String eventName, String eventType, String apiTime) {
         probeInitPingData();
@@ -78,16 +79,15 @@ class ProbePing {
 
 
     private static void uploadPingResult(String result) {
-        String netFlag = ProbeSystemParam.getNetFlag(ProbeInitializer.getContext());
-        probePingData.setFactory(ProbeSystemParam.getDeviceBrand());
-        probePingData.setModel(ProbeSystemParam.getDeviceModel());
-        probePingData.setOperatingSystem(ProbeSystemParam.getOperatingSystem());
-        probePingData.setOperatingSystemVersion(ProbeSystemParam.getSystemVersion());
+        probePingData.setFactory(systemData.getDeviceBrand());
+        probePingData.setModel(systemData.getDeviceModel());
+        probePingData.setOperatingSystem(systemData.getOperatingSystem());
+        probePingData.setOperatingSystemVersion(systemData.getSystemVersion());
         probePingData.setClientId(ProbeUtils.md5(probePingData.getClientId()));
-        probePingData.setAppName(ProbeSystemParam.getAppName(ProbeInitializer.getContext()));
-        probePingData.setAppVersion(ProbeSystemParam.getVersionName(ProbeInitializer.getContext()));
-        probePingData.setNetFlag(netFlag);
-        probePingData.setCarrierName(ProbeSystemParam.getOperators(ProbeInitializer.getContext()));
+        probePingData.setAppName(systemData.getAppName());
+        probePingData.setAppVersion(systemData.getVersionName());
+        probePingData.setNetFlag(systemData.getNetFlag());
+        probePingData.setCarrierName(systemData.getOperators());
         probePingData.setResult(result);
 
         if (probePingData.getClientId().length() > 16){

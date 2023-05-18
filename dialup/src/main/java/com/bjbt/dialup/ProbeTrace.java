@@ -25,9 +25,10 @@ class ProbeTrace {
     private static String ipToPing;
     private static float elapsedTime;
 
-    private static List<ProbeTraceEntity> traces = new ArrayList();
-    private static List<String> traceResult = new ArrayList<>();
-    private static ProbeTraceData probeTraceData = new ProbeTraceData();
+    private static final List<ProbeTraceEntity> traces = new ArrayList();
+    private static final List<String> traceResult = new ArrayList<>();
+    private static final ProbeTraceData probeTraceData = new ProbeTraceData();
+    private static final ProbeSystemData systemData = new ProbeSystemData();
 
     protected static void trace(String businessCode, String clientId, String ip, String eventCode, String eventName, String eventType, String apiTime) {
         probeTraceData.setBusinessCode(businessCode);
@@ -194,16 +195,15 @@ class ProbeTrace {
     }
 
     private static void uploadTraceResult(String result) {
-        String netFlag = ProbeSystemParam.getNetFlag(ProbeInitializer.getContext());
-        probeTraceData.setFactory(ProbeSystemParam.getDeviceBrand());
-        probeTraceData.setModel(ProbeSystemParam.getDeviceModel());
-        probeTraceData.setOperatingSystem(ProbeSystemParam.getOperatingSystem());
-        probeTraceData.setOperatingSystemVersion(ProbeSystemParam.getSystemVersion());
+        probeTraceData.setFactory(systemData.getDeviceBrand());
+        probeTraceData.setModel(systemData.getDeviceModel());
+        probeTraceData.setOperatingSystem(systemData.getOperatingSystem());
+        probeTraceData.setOperatingSystemVersion(systemData.getSystemVersion());
         probeTraceData.setClientId(ProbeUtils.md5(probeTraceData.getClientId()));
-        probeTraceData.setAppName(ProbeSystemParam.getAppName(ProbeInitializer.getContext()));
-        probeTraceData.setAppVersion(ProbeSystemParam.getVersionName(ProbeInitializer.getContext()));
-        probeTraceData.setNetFlag(netFlag);
-        probeTraceData.setCarrierName(ProbeSystemParam.getOperators(ProbeInitializer.getContext()));
+        probeTraceData.setAppName(systemData.getAppName());
+        probeTraceData.setAppVersion(systemData.getVersionName());
+        probeTraceData.setNetFlag(systemData.getNetFlag());
+        probeTraceData.setCarrierName(systemData.getOperators());
         probeTraceData.setResult(result);
 
         if (probeTraceData.getClientId().length() > 16) {

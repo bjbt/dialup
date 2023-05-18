@@ -2,7 +2,7 @@ package com.bjbt.dialup;
 
 class ProbeException {
 
-
+    private static final ProbeSystemData systemData = new ProbeSystemData();
     private static ProbeExceptionData probeExceptionData;
 
     protected static void exceptionReport(String businessCode, String clientId, String eventCode, String eventName, String indexCode, String indexValue, String exceptionCode, String exceptionMsg, String apiTime) {
@@ -24,16 +24,15 @@ class ProbeException {
     }
 
     private static void probeUploadExceptionReport() {
-        String netFlag = ProbeSystemParam.getNetFlag(ProbeInitializer.getContext());
-        probeExceptionData.setFactory(ProbeSystemParam.getDeviceBrand());
-        probeExceptionData.setModel(ProbeSystemParam.getDeviceModel());
-        probeExceptionData.setOperatingSystem(ProbeSystemParam.getOperatingSystem());
-        probeExceptionData.setOperatingSystemVersion(ProbeSystemParam.getSystemVersion());
+        probeExceptionData.setFactory(systemData.getDeviceBrand());
+        probeExceptionData.setModel(systemData.getDeviceModel());
+        probeExceptionData.setOperatingSystem(systemData.getOperatingSystem());
+        probeExceptionData.setOperatingSystemVersion(systemData.getSystemVersion());
         probeExceptionData.setClientId(ProbeUtils.md5(probeExceptionData.getClientId()));
-        probeExceptionData.setAppName(ProbeSystemParam.getAppName(ProbeInitializer.getContext()));
-        probeExceptionData.setAppVersion(ProbeSystemParam.getVersionName(ProbeInitializer.getContext()));
-        probeExceptionData.setNetFlag(netFlag);
-        probeExceptionData.setCarrierName(ProbeSystemParam.getOperators(ProbeInitializer.getContext()));
+        probeExceptionData.setAppName(systemData.getAppName());
+        probeExceptionData.setAppVersion(systemData.getVersionName());
+        probeExceptionData.setNetFlag(systemData.getNetFlag());
+        probeExceptionData.setCarrierName(systemData.getOperators());
 
         if (probeExceptionData.getClientId().length() > 16){
             probeExceptionData.setPasswordFlag("2");

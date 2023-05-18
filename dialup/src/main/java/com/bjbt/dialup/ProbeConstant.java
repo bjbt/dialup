@@ -3,12 +3,12 @@ package com.bjbt.dialup;
 public class ProbeConstant {
 
     //数据上报接口
-    public static final String PING_SERVER = "sdk/ping?sdkType=2&sdkVersion=1.3.3";
-    public static final String DNS_SERVER = "sdk/dns?sdkType=2&sdkVersion=1.3.3";
-    public static final String TRACE_SERVER = "sdk/trace?sdkType=2&sdkVersion=1.3.3";
-    public static final String SHORT_PROCESS_REPORT_SERVER = "sdk/shortProcessReport?sdkType=2&sdkVersion=1.3.3";
-    public static final String LONG_PROCESS_REPORT_SERVER = "sdk/longProcessReport?sdkType=2&sdkVersion=1.3.3";
-    public static final String EXCEPTION_SERVER = "sdk/exceptionReport?sdkType=2&sdkVersion=1.3.3";
+    public static final String PING_SERVER = "sdk/ping?sdkType=2&sdkVersion=1.3.4";
+    public static final String DNS_SERVER = "sdk/dns?sdkType=2&sdkVersion=1.3.4";
+    public static final String TRACE_SERVER = "sdk/trace?sdkType=2&sdkVersion=1.3.4";
+    public static final String SHORT_PROCESS_REPORT_SERVER = "sdk/shortProcessReport?sdkType=2&sdkVersion=1.3.4";
+    public static final String LONG_PROCESS_REPORT_SERVER = "sdk/longProcessReport?sdkType=2&sdkVersion=1.3.4";
+    public static final String EXCEPTION_SERVER = "sdk/exceptionReport?sdkType=2&sdkVersion=1.3.4";
 
     //获取地址结果解析key
     public static final String ZERO = "0";

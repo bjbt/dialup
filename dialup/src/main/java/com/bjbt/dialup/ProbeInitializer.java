@@ -2,7 +2,6 @@ package com.bjbt.dialup;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.text.TextUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;

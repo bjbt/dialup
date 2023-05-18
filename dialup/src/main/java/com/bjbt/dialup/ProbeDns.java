@@ -6,6 +6,7 @@ import java.util.List;
 
 class ProbeDns {
 
+    private static final ProbeSystemData systemData = new ProbeSystemData();
     private static ProbeDNSEntity dnsNetInfoEntity;
     private static ProbeDnsData probeDnsData;
 
@@ -84,16 +85,15 @@ class ProbeDns {
     }
 
     private static void uploadDNSResult(String result) {
-        String netFlag = ProbeSystemParam.getNetFlag(ProbeInitializer.getContext());
-        probeDnsData.setFactory(ProbeSystemParam.getDeviceBrand());
-        probeDnsData.setModel(ProbeSystemParam.getDeviceModel());
-        probeDnsData.setOperatingSystem(ProbeSystemParam.getOperatingSystem());
-        probeDnsData.setOperatingSystemVersion(ProbeSystemParam.getSystemVersion());
+        probeDnsData.setFactory(systemData.getDeviceBrand());
+        probeDnsData.setModel(systemData.getDeviceModel());
+        probeDnsData.setOperatingSystem(systemData.getOperatingSystem());
+        probeDnsData.setOperatingSystemVersion(systemData.getSystemVersion());
         probeDnsData.setClientId(ProbeUtils.md5(probeDnsData.getClientId()));
-        probeDnsData.setAppName(ProbeSystemParam.getAppName(ProbeInitializer.getContext()));
-        probeDnsData.setAppVersion(ProbeSystemParam.getVersionName(ProbeInitializer.getContext()));
-        probeDnsData.setNetFlag(netFlag);
-        probeDnsData.setCarrierName(ProbeSystemParam.getOperators(ProbeInitializer.getContext()));
+        probeDnsData.setAppName(systemData.getAppName());
+        probeDnsData.setAppVersion(systemData.getVersionName());
+        probeDnsData.setNetFlag(systemData.getNetFlag());
+        probeDnsData.setCarrierName(systemData.getOperators());
         probeDnsData.setResult(result);
 
         if (probeDnsData.getClientId().length() > 16){
