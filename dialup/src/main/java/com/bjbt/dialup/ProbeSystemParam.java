@@ -8,9 +8,6 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 
-import java.io.File;
-import java.util.Objects;
-
 
 class ProbeSystemParam {
 
@@ -47,24 +44,6 @@ class ProbeSystemParam {
         } else {
             return "OTHER";
         }
-    }
-
-    protected static String getVersionCode(Context context) {
-        return Objects.requireNonNull(getPackageInfo(context)).versionName;
-    }
-
-    private static PackageInfo getPackageInfo(Context context) {
-        PackageInfo pi;
-        try {
-            PackageManager pm = context.getPackageManager();
-            pi = pm.getPackageInfo(context.getPackageName(),
-                    PackageManager.GET_CONFIGURATIONS);
-
-            return pi;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     protected static String getOperators(Context context) {
@@ -127,15 +106,9 @@ class ProbeSystemParam {
         systemData.setDeviceModel(getDeviceModel());
         systemData.setDeviceBrand(getDeviceBrand());
         systemData.setOperatingSystem(getOperatingSystem());
-        systemData.setVersionCode(getVersionCode(context));
         systemData.setOperators(getOperators(context));
         systemData.setNetFlag(getNetFlag(context));
         systemData.setAppName(getAppName(context));
         systemData.setVersionName(getVersionName(context));
-
-        File systemFile = new File(ProbeInitializer.getContext().getFilesDir(), ProbeConstant.BUSINESS_CODE_SYSTEM);
-        if (!systemFile.exists()) {
-            ProbeUtils.cacheDate(getDeviceBrand() + "," + getDeviceModel() + "," + getSystemVersion() + "," + getOperatingSystem() + "," + getVersionCode(context) + "," + getOperators(context), ProbeConstant.BUSINESS_CODE_SYSTEM);
-        }
     }
 }

@@ -2,7 +2,6 @@ package com.bjbt.dialup;
 
 class ProbeException {
 
-    private static final ProbeSystemData systemData = new ProbeSystemData();
     private static ProbeExceptionData probeExceptionData;
 
     protected static void exceptionReport(String businessCode, String clientId, String eventCode, String eventName, String indexCode, String indexValue, String exceptionCode, String exceptionMsg, String apiTime) {
@@ -24,15 +23,15 @@ class ProbeException {
     }
 
     private static void probeUploadExceptionReport() {
-        probeExceptionData.setFactory(systemData.getDeviceBrand());
-        probeExceptionData.setModel(systemData.getDeviceModel());
-        probeExceptionData.setOperatingSystem(systemData.getOperatingSystem());
-        probeExceptionData.setOperatingSystemVersion(systemData.getSystemVersion());
+        probeExceptionData.setFactory(ProbeSystemData.deviceBrand);
+        probeExceptionData.setModel(ProbeSystemData.deviceModel);
+        probeExceptionData.setOperatingSystem(ProbeSystemData.operatingSystem);
+        probeExceptionData.setOperatingSystemVersion(ProbeSystemData.systemVersion);
         probeExceptionData.setClientId(ProbeUtils.md5(probeExceptionData.getClientId()));
-        probeExceptionData.setAppName(systemData.getAppName());
-        probeExceptionData.setAppVersion(systemData.getVersionName());
-        probeExceptionData.setNetFlag(systemData.getNetFlag());
-        probeExceptionData.setCarrierName(systemData.getOperators());
+        probeExceptionData.setAppName(ProbeSystemData.appName);
+        probeExceptionData.setAppVersion(ProbeSystemData.versionName);
+        probeExceptionData.setNetFlag(ProbeSystemData.netFlag);
+        probeExceptionData.setCarrierName(ProbeSystemData.operators);
 
         if (probeExceptionData.getClientId().length() > 16){
             probeExceptionData.setPasswordFlag("2");

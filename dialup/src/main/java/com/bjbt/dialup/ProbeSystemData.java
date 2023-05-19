@@ -2,85 +2,45 @@ package com.bjbt.dialup;
 
 class ProbeSystemData {
 
-    private String systemVersion;
-    private String deviceModel;
-    private String deviceBrand;
-    private String operatingSystem;
-    private String versionCode;
-    private String operators;
-    private String netFlag;
-    private String appName;
-    private String versionName;
+    protected static String systemVersion;
+    protected static String deviceModel;
+    protected static String deviceBrand;
+    protected static String operatingSystem;
+    protected static String operators;
+    protected static String netFlag;
+    protected static String appName;
+    protected static String versionName;
 
-    public String getSystemVersion() {
-        return systemVersion;
-    }
 
     public void setSystemVersion(String systemVersion) {
-        this.systemVersion = systemVersion;
-    }
-
-    public String getDeviceModel() {
-        return deviceModel;
+        ProbeSystemData.systemVersion = systemVersion;
     }
 
     public void setDeviceModel(String deviceModel) {
-        this.deviceModel = deviceModel;
-    }
-
-    public String getDeviceBrand() {
-        return deviceBrand;
+        ProbeSystemData.deviceModel = deviceModel;
     }
 
     public void setDeviceBrand(String deviceBrand) {
-        this.deviceBrand = deviceBrand;
-    }
-
-    public String getOperatingSystem() {
-        return operatingSystem;
+        ProbeSystemData.deviceBrand = deviceBrand;
     }
 
     public void setOperatingSystem(String operatingSystem) {
-        this.operatingSystem = operatingSystem;
-    }
-
-    public String getVersionCode() {
-        return versionCode;
-    }
-
-    public void setVersionCode(String versionCode) {
-        this.versionCode = versionCode;
-    }
-
-    public String getOperators() {
-        return operators;
+        ProbeSystemData.operatingSystem = operatingSystem;
     }
 
     public void setOperators(String operators) {
-        this.operators = operators;
-    }
-
-    public String getNetFlag() {
-        return netFlag;
+        ProbeSystemData.operators = operators;
     }
 
     public void setNetFlag(String netFlag) {
-        this.netFlag = netFlag;
-    }
-
-    public String getAppName() {
-        return appName;
+        ProbeSystemData.netFlag = netFlag;
     }
 
     public void setAppName(String appName) {
-        this.appName = appName;
-    }
-
-    public String getVersionName() {
-        return versionName;
+        ProbeSystemData.appName = appName;
     }
 
     public void setVersionName(String versionName) {
-        this.versionName = versionName;
+        ProbeSystemData.versionName = versionName;
     }
 }

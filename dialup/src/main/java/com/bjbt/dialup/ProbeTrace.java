@@ -28,7 +28,6 @@ class ProbeTrace {
     private static final List<ProbeTraceEntity> traces = new ArrayList();
     private static final List<String> traceResult = new ArrayList<>();
     private static final ProbeTraceData probeTraceData = new ProbeTraceData();
-    private static final ProbeSystemData systemData = new ProbeSystemData();
 
     protected static void trace(String businessCode, String clientId, String ip, String eventCode, String eventName, String eventType, String apiTime) {
         probeTraceData.setBusinessCode(businessCode);
@@ -195,15 +194,15 @@ class ProbeTrace {
     }
 
     private static void uploadTraceResult(String result) {
-        probeTraceData.setFactory(systemData.getDeviceBrand());
-        probeTraceData.setModel(systemData.getDeviceModel());
-        probeTraceData.setOperatingSystem(systemData.getOperatingSystem());
-        probeTraceData.setOperatingSystemVersion(systemData.getSystemVersion());
+        probeTraceData.setFactory(ProbeSystemData.deviceBrand);
+        probeTraceData.setModel(ProbeSystemData.deviceModel);
+        probeTraceData.setOperatingSystem(ProbeSystemData.operatingSystem);
+        probeTraceData.setOperatingSystemVersion(ProbeSystemData.systemVersion);
         probeTraceData.setClientId(ProbeUtils.md5(probeTraceData.getClientId()));
-        probeTraceData.setAppName(systemData.getAppName());
-        probeTraceData.setAppVersion(systemData.getVersionName());
-        probeTraceData.setNetFlag(systemData.getNetFlag());
-        probeTraceData.setCarrierName(systemData.getOperators());
+        probeTraceData.setAppName(ProbeSystemData.appName);
+        probeTraceData.setAppVersion(ProbeSystemData.versionName);
+        probeTraceData.setNetFlag(ProbeSystemData.netFlag);
+        probeTraceData.setCarrierName(ProbeSystemData.operators);
         probeTraceData.setResult(result);
 
         if (probeTraceData.getClientId().length() > 16) {

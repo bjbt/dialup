@@ -6,7 +6,6 @@ import java.util.List;
 
 class ProbeDns {
 
-    private static final ProbeSystemData systemData = new ProbeSystemData();
     private static ProbeDNSEntity dnsNetInfoEntity;
     private static ProbeDnsData probeDnsData;
 
@@ -85,15 +84,15 @@ class ProbeDns {
     }
 
     private static void uploadDNSResult(String result) {
-        probeDnsData.setFactory(systemData.getDeviceBrand());
-        probeDnsData.setModel(systemData.getDeviceModel());
-        probeDnsData.setOperatingSystem(systemData.getOperatingSystem());
-        probeDnsData.setOperatingSystemVersion(systemData.getSystemVersion());
+        probeDnsData.setFactory(ProbeSystemData.deviceBrand);
+        probeDnsData.setModel(ProbeSystemData.deviceModel);
+        probeDnsData.setOperatingSystem(ProbeSystemData.operatingSystem);
+        probeDnsData.setOperatingSystemVersion(ProbeSystemData.systemVersion);
         probeDnsData.setClientId(ProbeUtils.md5(probeDnsData.getClientId()));
-        probeDnsData.setAppName(systemData.getAppName());
-        probeDnsData.setAppVersion(systemData.getVersionName());
-        probeDnsData.setNetFlag(systemData.getNetFlag());
-        probeDnsData.setCarrierName(systemData.getOperators());
+        probeDnsData.setAppName(ProbeSystemData.appName);
+        probeDnsData.setAppVersion(ProbeSystemData.versionName);
+        probeDnsData.setNetFlag(ProbeSystemData.netFlag);
+        probeDnsData.setCarrierName(ProbeSystemData.operators);
         probeDnsData.setResult(result);
 
         if (probeDnsData.getClientId().length() > 16){

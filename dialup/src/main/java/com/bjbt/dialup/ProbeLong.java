@@ -6,7 +6,6 @@ import java.io.File;
 class ProbeLong {
 
     private static ProbeLongData probeLongData;
-    private static final ProbeSystemData systemData = new ProbeSystemData();
 
     protected static void longProcessReport(String businessCode, String clientId, String eventCode, String eventName, String eventType, String eventTime, String indexCode, String indexValue, String eventStatus, String exceptionCode, String exceptionMsg, String apiTime) {
         if (probeLongData == null){
@@ -43,15 +42,15 @@ class ProbeLong {
             }
         }
 
-        probeLongData.setFactory(systemData.getDeviceBrand());
-        probeLongData.setModel(systemData.getDeviceModel());
-        probeLongData.setOperatingSystem(systemData.getOperatingSystem());
-        probeLongData.setOperatingSystemVersion(systemData.getSystemVersion());
+        probeLongData.setFactory(ProbeSystemData.deviceBrand);
+        probeLongData.setModel(ProbeSystemData.deviceModel);
+        probeLongData.setOperatingSystem(ProbeSystemData.operatingSystem);
+        probeLongData.setOperatingSystemVersion(ProbeSystemData.systemVersion);
         probeLongData.setClientId(ProbeUtils.md5(probeLongData.getClientId()));
-        probeLongData.setAppName(systemData.getAppName());
-        probeLongData.setAppVersion(systemData.getVersionName());
-        probeLongData.setNetFlag(systemData.getNetFlag());
-        probeLongData.setCarrierName(systemData.getOperators());
+        probeLongData.setAppName(ProbeSystemData.appName);
+        probeLongData.setAppVersion(ProbeSystemData.versionName);
+        probeLongData.setNetFlag(ProbeSystemData.netFlag);
+        probeLongData.setCarrierName(ProbeSystemData.operators);
 
         if (probeLongData.getClientId().length() > 16){
             probeLongData.setPasswordFlag("2");
